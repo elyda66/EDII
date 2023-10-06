@@ -20,10 +20,13 @@ int main() {
     int i = 0;
     char arquivo[] = {"compartimento_hash.dat"};
     Lista tabela[TAM];
-     int numClientes;
+    int numClientes;
+    arquivoCliente();
 
-    printf("Quantos clientes deseja adicionar? ");
+
+    printf("\n\nQuantos clientes deseja adicionar: ");
     scanf("%d", &numClientes);
+    printf("\n");
 
     // Declara um array de clientes com o tamanho informado pelo usuário
      Cliente clientes[numClientes];
@@ -34,26 +37,26 @@ int main() {
         scanf("%d", &clientes[i].codCliente);
 
         printf("Informe o nome do Cliente %d: ", i + 1);
-        scanf("%s", clientes[i].nome);
+        scanf("%s", &clientes[i].nome);
+
+        printf("\n");
     }
 
      numClientes = sizeof(clientes) / sizeof(clientes[0]);
 
-    FILE *arqCliente = arquivoCliente("cliente.dat");
+    FILE *arqCliente = abreCliente();
     if (arqCliente != NULL) {
+            
+        escreverClientes(clientes, numClientes);
+        fclose(arqCliente);
         
+        arqCliente = abreCliente();
+        
+        //Coloca o ponteiro para o inicio do arquivo
+        fseek(arqCliente, 0, SEEK_SET);
+        lerClientes(numClientes);
 
-    
-    escreverClientes(clientes, numClientes);
-    fclose(arqCliente);
-    
-    arqCliente = fopen("cliente.dat", "r+b");
-    
-    //Coloca o ponteiro para o inicio do arquivo
-    fseek(arqCliente, 0, SEEK_SET);
-    lerClientes(numClientes);
-
-    fclose(arqCliente);
+        fclose(arqCliente);
     } else {
         printf("Erro ao abrir o arquivo para escrita.\n");
     }

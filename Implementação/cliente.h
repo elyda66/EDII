@@ -51,7 +51,7 @@ Cliente *CriaCliente (int codCliente, char *nome){
 
 void lerClientes(int numClientes) {
     FILE *arquivoCliente = abreCliente();
-    Cliente *clientes = malloc(sizeof(Cliente));
+    Cliente *clientes = (Cliente *)malloc(sizeof(Cliente));
 
     fseek (arquivoCliente, 0, SEEK_SET);
 
@@ -82,48 +82,64 @@ void lerClientes(int numClientes) {
 
 
 // Escreve os clientes no arquivo .dat atráves da estrutura do tipo Cliente
-int escreverClientes(Cliente *clientes, int numClientes) {
+// int escreverClientes(Cliente *clientes, int numClientes) {
+//     FILE *arquivoCliente = abreCliente ();
+//     Cliente *C = (Cliente *)malloc(sizeof(Cliente));//cliente contido no arquivo que estou lendo
+
+//     clientes->status = false;
+
+//     fseek (arquivoCliente, 0, SEEK_SET);
+
+//     //procurando parte a parte
+//     for (int i = 0; i < numClientes; i++){
+//         size_t tamanho = sizeof(Cliente);
+//         fread(C, tamanho, 1, arquivoCliente);
+
+//         if(clientes->codCliente == C->codCliente){
+//             if(C->status == false){
+//             printf ("Codigo ja inserido\n");
+//             break;
+//             }
+//             else{
+//                 fseek(arquivoCliente, -(sizeof(Cliente)), SEEK_CUR);
+//                 size_t tamanho = sizeof(Cliente);
+//                 fwrite(clientes, tamanho, 1, arquivoCliente);
+//                 fclose(arquivoCliente);
+//                 numClientes++;
+//                 break;
+//             }
+//         }
+            
+            
+//         else if (feof(arquivoCliente)){
+//             size_t tamanho = sizeof(Cliente);
+//             fwrite(clientes, tamanho, 1, arquivoCliente);
+//             fclose(arquivoCliente);
+//             numClientes++;
+//             break;
+//         }
+//     }
+
+//     fclose (arquivoCliente);
+//     free (C);
+//     return numClientes;
+
+// }
+
+// Escreve os clientes no arquivo .dat atráves da estrutura do tipo Cliente
+void escreverClientes(Cliente *clientes, int numClientes) {
     FILE *arquivoCliente = abreCliente ();
-    Cliente *C = (Cliente *)malloc(sizeof(Cliente));//cliente contido no arquivo que estou lendo
+    Cliente *cliente = (Cliente *)malloc(sizeof(Cliente));//cliente contido no arquivo que estou lendo
 
-    clientes->status = false;
-
-    fseek (arquivoCliente, 0, SEEK_SET);
-
-    //procurando parte a parte
-    for (int i = 0; i < numClientes; i++){
-        size_t tamanho = sizeof(Cliente);
-        fread(C, tamanho, 1, arquivoCliente);
-
-        if(clientes->codCliente == C->codCliente){
-            if(C->status == false){
-            printf ("Codigo ja inserido\n");
-            break;
-            }
-            else{
-                fseek(arquivoCliente, -(sizeof(Cliente)), SEEK_CUR);
-                size_t tamanho = sizeof(Cliente);
-                fwrite(clientes, tamanho, 1, arquivoCliente);
-                fclose(arquivoCliente);
-                numClientes++;
-                break;
-            }
-        }
-            
-            
-        else if (feof(arquivoCliente)){
-            size_t tamanho = sizeof(Cliente);
-            fwrite(clientes, tamanho, 1, arquivoCliente);
-            fclose(arquivoCliente);
-            numClientes++;
-            break;
-        }
+    cliente->status = false;
+    
+    if (fwrite(cliente, sizeof(Cliente), numClientes, arquivoCliente) != numClientes) {
+        printf("Erro ao escrever clientes no arquivo.\n");
+        exit(1);
     }
 
-    fclose (arquivoCliente);
-    free (C);
-    return numClientes;
-
+    fclose(arquivoCliente);
+    free(cliente);
 }
 
 //se retornar 0, o cliente nao foi encontrado

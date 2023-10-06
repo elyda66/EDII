@@ -20,7 +20,7 @@ int main() {
     char arquivo[] = {"compartimento_hash.dat"};
     Lista tabela[TAM];
     Cliente *clientes = (Cliente *)malloc(sizeof(Cliente));
-    inicializarTabela(tabela);
+    
 
     do{
         printf("\n\nQual funcao quer usar?\n");
@@ -54,8 +54,9 @@ int main() {
             }
     
             printf("---- Cliente(s) Inseridos ----\n\n");
-            numClientes = escreverClientes(clientes, numClientes + 1);
+            escreverClientes(clientes, numClientes);
 
+            inicializarTabela(tabela);
             for (int i = 0; i < numClientes; i++){  
                  inserir(tabela, clientes[i].codCliente);
             }

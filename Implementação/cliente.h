@@ -74,9 +74,12 @@ void lerClientes(int numClientes) {
         exit(1);
     }
 
+    clientes->status == false;
+
     for (int i = 0; i < numClientes; i++) {
         printf("Codigo Cliente: %d\n", clientes[i].codCliente);
         printf("Nome do cliente: %s\n", clientes[i].nome);
+        clientes[i].status == false;
         if (clientes[i].status == false && clientes[i].codCliente != 0){
             printf ("status: false ");
         }else{

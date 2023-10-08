@@ -17,7 +17,7 @@ int funcaoHash(int chave){
 void inicializarTabela(Lista t[]) {
     for (int i = 0; i < TAM; i++) {
         t[i].chave = -1; //  chaves com um valor inválido
-        t[i].proximo = NULL;
+        t[i].proximo = NULL;  
     }
 }
 

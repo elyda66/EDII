@@ -16,8 +16,6 @@ Implementar o Encadeamento Exterior
 
 
 int main() {
-    int opcao;
-    int i = 0;
     char arquivo[] = {"compartimento_hash.dat"};
     Lista tabela[TAM];
     int numClientes;
@@ -37,8 +35,7 @@ int main() {
         scanf("%d", &clientes[i].codCliente);
 
         printf("Informe o nome do Cliente %d: ", i + 1);
-        scanf("%s", &clientes[i].nome);
-
+        scanf("%s", clientes[i].nome);
         printf("\n");
     }
 

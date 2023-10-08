@@ -1,5 +1,3 @@
-// Isso serve para criar a biblioteca !! 
-//#include "compartimento_hash.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -12,10 +10,11 @@ FILE* arquivoClientes();
 // chave e seu valor
 typedef struct {
     int codCliente;
-    char nome[101];    
+    char nome[100];    
     bool status; // TRUE == LIBERADO ou FALSE == OCUPADO
     struct Cliente *prox;
 }Cliente;
+
 
 // Cria o arquivo binário 
 FILE *arquivoCliente(){
@@ -74,69 +73,22 @@ void lerClientes(int numClientes) {
         exit(1);
     }
 
-    clientes->status == false;
-
     for (int i = 0; i < numClientes; i++) {
-        printf("Codigo Cliente: %d\n", clientes[i].codCliente);
-        printf("Nome do cliente: %s\n", clientes[i].nome);
-        clientes[i].status == false;
+        printf("Codigo Cliente: %d\t", clientes[i].codCliente);
+        printf("Nome do cliente: %s\t", clientes[i].nome);
         if (clientes[i].status == false && clientes[i].codCliente != 0){
-            printf ("status: false ");
+            printf ("\tstatus: false ");
         }else{
-            printf ("status: true ");
+            printf ("\tstatus: true ");
         }
 
-        printf ("proximo: %d\n\n", clientes[i].prox);
+        printf ("\tproximo: %d\n\n", clientes[i].prox);
     }
 
     free(clientes);
 }
 
 
-// // Escreve os clientes no arquivo .dat atráves da estrutura do tipo Cliente
-// int escreverClientes(Cliente *clientes, int numClientes) {
-//     FILE *arquivoCliente = abreCliente ();
-//     Cliente *C = (Cliente *)malloc(sizeof(Cliente));//cliente contido no arquivo que estou lendo
-
-//     clientes->status = false;
-
-//     fseek (arquivoCliente, 0, SEEK_SET);
-
-//     //procurando parte a parte
-//     for (int i = 0; i < numClientes; i++){
-//         size_t tamanho = sizeof(Cliente);
-//         fread(C, tamanho, 1, arquivoCliente);
-
-//         if(clientes->codCliente == C->codCliente){
-//             if(C->status == false){
-//             printf ("Codigo ja inserido\n");
-//             break;
-//             }
-//             else{
-//                 fseek(arquivoCliente, -(sizeof(Cliente)), SEEK_CUR);
-//                 size_t tamanho = sizeof(Cliente);
-//                 fwrite(clientes, tamanho, 1, arquivoCliente);
-//                 fclose(arquivoCliente);
-//                 numClientes++;
-//                 break;
-//             }
-//         }
-            
-            
-//         else if (feof(arquivoCliente)){
-//             size_t tamanho = sizeof(Cliente);
-//             fwrite(clientes, tamanho, 1, arquivoCliente);
-//             fclose(arquivoCliente);
-//             numClientes++;
-//             break;
-//         }
-//     }
-
-//     fclose (arquivoCliente);
-//     free (C);
-//     return numClientes;
-
-// }
 
 //Escreve os clientes no arquivo .dat atráves da estrutura do tipo Cliente
 void escreverClientes(Cliente *clientes, int numClientes) {
@@ -147,13 +99,11 @@ void escreverClientes(Cliente *clientes, int numClientes) {
     }
 
     Cliente *cliente = (Cliente *)malloc(sizeof(Cliente));
-    //cliente->status = false;
-
     cliente = clientes;
     cliente->status = false;
 
     fwrite(cliente, sizeof(Cliente), numClientes, arquivoCli);
-
+    
     fclose(arquivoCli);
     free(cliente);
 }

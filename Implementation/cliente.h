@@ -100,7 +100,12 @@ void escreverClientes(Cliente *clientes, int numClientes) {
 
     Cliente *cliente = (Cliente *)malloc(sizeof(Cliente));
     cliente = clientes;
-    cliente->status = false;
+
+    for (int i=0; i < numClientes; i++){
+
+        cliente[i].status = false;
+
+    }
 
     fwrite(cliente, sizeof(Cliente), numClientes, arquivoCli);
     

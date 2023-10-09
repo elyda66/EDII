@@ -70,5 +70,15 @@ int main() {
     
     
     lerHash(tabela,arquivo);
+    
+    int remove;
+
+    printf ("Insira o codigo que quer remover\n");
+
+    scanf ("%d", &remove);
+
+    removeCliente (remove);
+
+    lerClientes (numClientes);
     return 0;
 }

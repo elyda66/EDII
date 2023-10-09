@@ -10,6 +10,13 @@ typedef struct no{
     struct no *proximo;
 }Lista;
 
+// typedef struct TbTemp{
+//     int chave;
+//     int codCliente;
+//     int clienteProx;
+//     struct TbTemp *proximo;
+// }TabelaTemporaria;
+
 int funcaoHash(int chave){
     return chave % (int)TAM;
 }
@@ -20,7 +27,6 @@ void inicializarTabela(Lista t[]) {
         t[i].proximo = NULL;  
     }
 }
-
 
 
 void *inserir(Lista t[], int valor) {
@@ -35,8 +41,6 @@ void *inserir(Lista t[], int valor) {
     novoNo->chave = id;
     novoNo->proximo = t[id].proximo;
     t[id].proximo = novoNo;
-
-    return novoNo->proximo;
 }
 
 void escreverHash(Lista t[], char arq[]) {

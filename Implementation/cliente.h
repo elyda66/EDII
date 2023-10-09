@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdbool.h>
 
+
 // No início do arquivo cliente.h
 FILE* arquivoClientes();
 
@@ -12,6 +13,7 @@ typedef struct {
     int codCliente;
     char nome[100];    
     bool status; // TRUE == LIBERADO ou FALSE == OCUPADO
+    int posicao;
     struct Cliente *prox;
 }Cliente;
 
@@ -76,19 +78,39 @@ void lerClientes(int numClientes) {
     for (int i = 0; i < numClientes; i++) {
         printf("Codigo Cliente: %d\t", clientes[i].codCliente);
         printf("Nome do cliente: %s\t", clientes[i].nome);
-        if (clientes[i].status == false && clientes[i].codCliente != 0){
+        if (clientes[i].status == false){
             printf ("\tstatus: false ");
         }else{
             printf ("\tstatus: true ");
         }
 
-        printf ("\tproximo: %d\n\n", clientes[i].prox);
+        //printf ("\tproximo: %d\n\n", clientes[i].prox);
+        printf ("Proximo cliente: %d\n", clientes[i].posicao);
     }
 
     free(clientes);
 }
 
 
+int Busca (int codCliente, Cliente cliente[], int numCliente, int posicao){
+
+    int hash = codCliente % 7;
+
+    for (int i = posicao + 1; i < numCliente; i++){
+
+        if (cliente[i].status == true){
+            continue;
+        }
+
+        int temp = cliente[i].codCliente % 7;
+
+        if (hash == temp){
+            return i;
+        }
+    }
+
+    return -1; 
+}
 
 //Escreve os clientes no arquivo .dat atráves da estrutura do tipo Cliente
 void escreverClientes(Cliente *clientes, int numClientes) {
@@ -100,11 +122,11 @@ void escreverClientes(Cliente *clientes, int numClientes) {
 
     Cliente *cliente = (Cliente *)malloc(sizeof(Cliente));
     cliente = clientes;
-
-    for (int i=0; i < numClientes; i++){
+    
+    for (int i = 0; i < numClientes; i++){
 
         cliente[i].status = false;
-
+        cliente[i].posicao = Busca(cliente[i].codCliente, cliente, numClientes, i);
     }
 
     fwrite(cliente, sizeof(Cliente), numClientes, arquivoCli);
@@ -126,8 +148,8 @@ int removeCliente (int cod){
             cliente->status = true;
 
             fseek (arquivoCliente, -sizeof(Cliente), SEEK_CUR);
-
             fwrite (cliente, 1, sizeof(Cliente), arquivoCliente);
+            
             fclose (arquivoCliente);
             free (cliente);
 
@@ -139,3 +161,4 @@ int removeCliente (int cod){
     return 0;
 
 }
+

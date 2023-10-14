@@ -1,7 +1,6 @@
 // Bibliotecas
 #include <stdio.h>
 #include <stdlib.h>
-#include "compartimento_hash.h"
 #include "cliente.h"
 #include <string.h>
 
@@ -27,7 +26,14 @@ int main() {
     printf("\n");
 
     // Declara um array de clientes com o tamanho informado pelo usuário
-     Cliente clientes[numClientes];
+     Cliente clientes[TAM];
+    for(int i = 0; i < TAM; i++){
+        
+        clientes[i].codCliente = -1;
+        clientes[i].posicao = i;
+        clientes[i].Flag = 0;
+
+    }
 
     // Preenche o array com os dados do usuário
     for (int i = 0; i < numClientes; i++) {
@@ -43,8 +49,8 @@ int main() {
 
     FILE *arqCliente = abreCliente();
     if (arqCliente != NULL) {
-            
-        escreverClientes(clientes, numClientes);
+        inicializarTabela(tabela);    
+        escreverClientes(clientes, numClientes,tabela);
         fclose(arqCliente);
         
         arqCliente = abreCliente();
@@ -54,31 +60,13 @@ int main() {
         lerClientes(numClientes);
 
         fclose(arqCliente);
-    } else {
-        printf("Erro ao abrir o arquivo para escrita.\n");
     }
-    
-    inicializarTabela(tabela);
-
-    //int valor[TAM] = clientes.codCliente;
-
-    for (int i = 0; i < numClientes; i++){
-
-        inserir(tabela, clientes[i].codCliente);
-    }
-    escreverHash(tabela,arquivo); 
-    
-    
-    lerHash(tabela,arquivo);
     
     int remove;
-
     printf ("Insira o codigo que quer remover\n");
-
     scanf ("%d", &remove);
-
     removeCliente (remove);
-
     lerClientes (numClientes);
+
     return 0;
 }

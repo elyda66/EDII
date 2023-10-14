@@ -30,6 +30,7 @@ int main() {
     for(int i = 0; i < TAM; i++){
         
         clientes[i].codCliente = -1;
+        memset(clientes[i].nome, 0, 100);//limpando o array de char
         clientes[i].posicao = i;
         clientes[i].Flag = 0;
 

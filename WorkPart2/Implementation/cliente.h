@@ -65,7 +65,7 @@ int  funcaoFlag(int codCliente, Cliente cliente[], int numCliente, int posicao, 
 
 // Cria o arquivo binário 
 FILE *arquivoCliente(){
-    FILE *arquivo = fopen("cliente.dat", "w+b");
+    FILE *arquivo = fopen("tabHash.dat", "w+b");
     if(arquivo == NULL){
         printf("Erro ao abrir o arquivo.\n");
         exit(1);
@@ -76,7 +76,7 @@ FILE *arquivoCliente(){
 }
 //abre o arquivo
 FILE *abreCliente (){
-    FILE *arquivo = fopen("cliente.dat", "r+b");
+    FILE *arquivo = fopen("tabHash.dat", "r+b");
 
     if (arquivo == NULL){
         printf("erro ao abrir o arquivo cliente\n");

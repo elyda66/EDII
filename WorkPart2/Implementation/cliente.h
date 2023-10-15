@@ -118,8 +118,16 @@ void lerClientes(int numClientes) {
     for (int i = 0; i < numClientes; i++) {
         printf("Codigo Cliente: %d\t", clientes[i].codCliente);
         printf("Nome do cliente: %s\t", clientes[i].nome);
-        printf ("\t\tProximo cliente: %d\t", clientes[i].posicao);
-        printf ("\t\t Flag cliente: %d\n", clientes[i].Flag);
+        // printf ("\t\tProximo cliente: %d\t", clientes[i].posicao);
+
+        if(i <= numClientes){
+            printf ("Proximo cliente: %d\t", clientes[i].posicao);
+        }else
+        {
+            printf ("Proximo cliente: %d\t", clientes[i].posicao = i);
+        }
+        
+        printf ("Flag cliente: %d\n", clientes[i].Flag);
     }
 
     free(clientes);
@@ -131,12 +139,14 @@ int VerificarPosicaoCliente(int codCliente, Cliente cliente[], int posicao, int 
 
     if (codCliente == -1) return posicao;
 
-    int hash = codCliente % 7;
+    
 
     for (int i = posicao + 1; i < TAM ; i++){
+        int hash = codCliente % 7;
         int temp = cliente[i].codCliente % 7;
+
         if (hash == temp){
-            return i;
+            return i ;
         }
     }
 
@@ -154,10 +164,10 @@ void escreverClientes(Cliente *clientes, int numClientes, Lista t[]) {
     Cliente *cliente = (Cliente *)malloc(sizeof(Cliente));
     cliente = clientes;
     
-    for (int i = 0; i < numClientes; i++){
+    // for (int i = 0; i < numClientes; i++){
 
-        cliente[i].status = false;
-    }
+    //     cliente[i].status = false;
+    // }
     for (int i = 0; i < numClientes; i++){
 
         cliente[i].posicao = VerificarPosicaoCliente(cliente[i].codCliente, cliente, i, numClientes);

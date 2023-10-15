@@ -115,21 +115,26 @@ void lerClientes(int numClientes) {
         exit(1);
     }
 
+    printf("------------------------------------------------------------------------------------------------------------\n");
+    printf("HASH\t|CODIGO\t\t\t|NOME\t\t\t|PROXIMO\t\t|FLAG\n");
+    printf("------------------------------------------------------------------------------------------------------------\n");
+    
     for (int i = 0; i < numClientes; i++) {
-        printf("Codigo Cliente: %d\t", clientes[i].codCliente);
-        printf("Nome do cliente: %s\t", clientes[i].nome);
+        printf("%d\t" ,i);
+        printf("| Codigo Cliente: %d\t", clientes[i].codCliente);
+        printf("| Nome do cliente: %s\t", clientes[i].nome);
         // printf ("\t\tProximo cliente: %d\t", clientes[i].posicao);
 
         if(i <= numClientes){
-            printf ("Proximo cliente: %d\t", clientes[i].posicao);
+            printf ("| Proximo cliente: %d\t", clientes[i].posicao);
         }else
         {
-            printf ("Proximo cliente: %d\t", clientes[i].posicao = i);
+            printf ("| Proximo cliente: %d\t", clientes[i].posicao = i);
         }
         
-        printf ("Flag cliente: %d\n", clientes[i].Flag);
+        printf ("| Flag cliente: %d\n", clientes[i].Flag);
     }
-
+    printf("------------------------------------------------------------------------------------------------------------\n");
     free(clientes);
 }
 
@@ -161,25 +166,41 @@ void escreverClientes(Cliente *clientes, int numClientes, Lista t[]) {
         exit(1);
     }
 
-    Cliente *cliente = (Cliente *)malloc(sizeof(Cliente));
-    cliente = clientes;
-    
-    // for (int i = 0; i < numClientes; i++){
+    Cliente *cliente = (Cliente *)malloc(sizeof(Cliente) * TAM);
 
-    //     cliente[i].status = false;
-    // }
-    for (int i = 0; i < numClientes; i++){
+    // Inicializa o array clientes
+    for (int i = 0; i < TAM; i++) {
+        cliente[i].codCliente = -1;
+        strcpy(cliente[i].nome, "");
+        cliente[i].posicao = -1;
+        cliente[i].Flag = 0;
+    }
 
+    // Atualiza o array dos clientes
+    for (int i = 0; i < numClientes; i++) {
+        int hash = funcaoHash(clientes[i].codCliente);
+        if (cliente[hash].codCliente == -1) {
+            // Caso aposição estiver vazia coloque nela
+            cliente[hash] = clientes[i];
+        } else {
+            // Caso a posição estiver ocupada, procure a proxima 
+            for (int j = hash + 1; j < TAM; j++) {
+                if (cliente[j].codCliente == -1) {
+                    cliente[j] = clientes[i];
+                    break;
+                }
+            }
+        }
+    }
+
+    // atualiza a posição e a flag
+    for (int i = 0; i < TAM; i++) {
         cliente[i].posicao = VerificarPosicaoCliente(cliente[i].codCliente, cliente, i, numClientes);
+        cliente[i].Flag = funcaoFlag(cliente[i].codCliente, cliente, TAM, i, t);
     }
-     for (int i = 0; i < TAM; i++){
 
-        cliente[i].Flag = funcaoFlag(cliente[i].codCliente, cliente, TAM, i,t);
-    }
-    
+    fwrite(cliente, sizeof(Cliente), TAM, arquivoCli);
 
-    fwrite(cliente, sizeof(Cliente), numClientes, arquivoCli);
-    
     fclose(arquivoCli);
     free(cliente);
 }

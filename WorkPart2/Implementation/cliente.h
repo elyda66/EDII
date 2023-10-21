@@ -41,10 +41,7 @@ int  funcaoFlag(int codCliente, Cliente cliente[], int numCliente, int posicao, 
        return 0;
     }
        
-
     for (int i = posicao; i < numCliente; i++){
-        
-      //  int hashNew = funcaoHash(cliente[i].codCliente);
         if (t[hash].chave == 0){
             t[hash].chave = 1;
             return 1;
@@ -57,7 +54,6 @@ int  funcaoFlag(int codCliente, Cliente cliente[], int numCliente, int posicao, 
                      return 1;
                 }
             }
-            //return 0;
         }    
     }
 }
@@ -136,6 +132,7 @@ void lerClientes(int numClientes) {
     }
     printf("------------------------------------------------------------------------------------------------------------\n");
     free(clientes);
+    fclose(arquivoCliente);
 }
 
 //esta com erro, indo diretamente para o ultimo return
@@ -161,32 +158,29 @@ int VerificarPosicaoCliente(int codCliente, Cliente cliente[], int posicao, int 
 //Escreve os clientes no arquivo .dat atráves da estrutura do tipo Cliente
 void escreverClientes(Cliente *clientes, int numClientes, Lista t[]) {
     FILE *arquivoCli = arquivoCliente();
-    if (arquivoCli == NULL) {
-        printf("Erro ao abrir arquivo de clientes.\n");
-        exit(1);
-    }
 
-    Cliente *cliente = (Cliente *)malloc(sizeof(Cliente) * TAM);
+    Cliente *clienteTemp = (Cliente *)malloc(sizeof(Cliente) * TAM);
 
     // Inicializa o array clientes
     for (int i = 0; i < TAM; i++) {
-        cliente[i].codCliente = -1;
-        strcpy(cliente[i].nome, "");
-        cliente[i].posicao = -1;
-        cliente[i].Flag = 0;
+        clienteTemp[i].codCliente = -1;
+        clienteTemp[i].nome[0] = '\0';
+        clienteTemp[i].posicao = -1;
+        clienteTemp[i].Flag = 0;
     }
 
+    
     // Atualiza o array dos clientes
     for (int i = 0; i < numClientes; i++) {
         int hash = funcaoHash(clientes[i].codCliente);
-        if (cliente[hash].codCliente == -1) {
+        if (clienteTemp[hash].codCliente == -1) {
             // Caso aposição estiver vazia coloque nela
-            cliente[hash] = clientes[i];
+            clienteTemp[hash] = clientes[i];
         } else {
             // Caso a posição estiver ocupada, procure a proxima 
             for (int j = hash + 1; j < TAM; j++) {
-                if (cliente[j].codCliente == -1) {
-                    cliente[j] = clientes[i];
+                if (clienteTemp[j].codCliente == -1) {
+                    clienteTemp[j] = clientes[i];
                     break;
                 }
             }
@@ -195,18 +189,19 @@ void escreverClientes(Cliente *clientes, int numClientes, Lista t[]) {
 
     // atualiza a posição e a flag
     for (int i = 0; i < TAM; i++) {
-        cliente[i].posicao = VerificarPosicaoCliente(cliente[i].codCliente, cliente, i, numClientes);
-        cliente[i].Flag = funcaoFlag(cliente[i].codCliente, cliente, TAM, i, t);
+        clienteTemp[i].posicao = VerificarPosicaoCliente(clienteTemp[i].codCliente, clientes, i, numClientes);
+        clienteTemp[i].Flag = funcaoFlag(clienteTemp[i].codCliente, clientes, TAM - 1, i, t);
+        
     }
 
-    fwrite(cliente, sizeof(Cliente), TAM, arquivoCli);
+    fwrite(clienteTemp, sizeof(Cliente), TAM, arquivoCli);
 
     fclose(arquivoCli);
-    free(cliente);
+    free(clienteTemp);
 }
 
 //se retornar 0, o cliente nao foi encontrado
-int removeCliente (int cod){
+int removeCliente (int cod, Cliente clientes[]){
     FILE *arquivoCliente = abreCliente();
     Cliente *cliente = (Cliente *)malloc(sizeof(Cliente));
 
@@ -248,6 +243,15 @@ int removeCliente (int cod){
 
             fseek (arquivoCliente, sizeof(Cliente) * contador, SEEK_SET);
             fwrite (cliente, 1, sizeof(Cliente), arquivoCliente);
+
+            for (int i = 0; i < TAM; i++){
+                if (clientes[i].codCliente == cod){
+                    clientes[i].codCliente = -1;
+                    memset(clientes[i].nome, 0, 100);//limpando o array de char
+                    clientes[i].posicao = i;
+                    clientes[i].Flag = 0;
+                }
+            }
             
             fclose (arquivoCliente);
             free (aux);
@@ -259,6 +263,8 @@ int removeCliente (int cod){
     }
     fclose (arquivoCliente);
     free (cliente);
+    printf ("cliente nao encontrado\n");
+
     return 0;
 
 }

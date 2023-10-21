@@ -16,58 +16,99 @@ Implementar o Encadeamento Exterior
 
 int main() {
     char arquivo[] = {"compartimento_hash.dat"};
+    int numClientes;
     Lista tabela[TAM];
-     int numClientes;
+    inicializarTabela(tabela);    
+
+
     arquivoCliente();
 
 
-    printf("\n\nQuantos clientes deseja adicionar: ");
-    scanf("%d", &numClientes);
-    printf("\n");
+    //printf("\n\nQuantos clientes deseja adicionar: ");
+    //scanf("%d", &numClientes);
+    //printf("\n");
 
     // Declara um array de clientes com o tamanho informado pelo usuário
-     Cliente clientes[TAM];
+    Cliente clientes[TAM];
+    
     for(int i = 0; i < TAM; i++){
         
         clientes[i].codCliente = -1;
-        memset(clientes[i].nome, 0, 100);//limpando o array de char
+        clientes[i].nome[0] = '\0';//limpando o array de char
         clientes[i].posicao = i;
         clientes[i].Flag = 0;
 
     }
 
-    // Preenche o array com os dados do usuário
-    for (int i = 0; i < numClientes; i++) {
-        printf("Informe o ID do Cliente %d: ", i + 1);
-        scanf("%d", &clientes[i].codCliente);
-
-        printf("Informe o nome do Cliente %d: ", i + 1);
-        scanf("%s", clientes[i].nome);
-        printf("\n");
-    }
-
-     numClientes = sizeof(clientes) / sizeof(clientes[0]);
-
-    FILE *arqCliente = abreCliente();
-    if (arqCliente != NULL) {
-        inicializarTabela(tabela);    
-        escreverClientes(clientes, numClientes,tabela);
-        fclose(arqCliente);
-        
-        arqCliente = abreCliente();
-        
-        //Coloca o ponteiro para o inicio do arquivo
-        fseek(arqCliente, 0, SEEK_SET);
-        lerClientes(numClientes);
-
-        fclose(arqCliente);
-    }
+    int fazer, cod;
     
-    int remove;
-    printf ("Insira o codigo que quer remover\n");
-    scanf ("%d", &remove);
-    removeCliente (remove);
-    lerClientes (numClientes);
+    Cliente temp;
+
+    
+    do{
+        printf("Qual funcao quer usar?\n");
+        printf("1: inserir cliente\n");
+        printf("2: ler todos os clientes\n");
+        printf("3: remover cliente\n");
+        printf("0: encerrar o programa\n");
+
+        scanf("%d", &fazer);
+        getchar();
+
+        switch (fazer){
+            case 1:
+                printf ("insira o codigo do cliente:\n");
+                scanf ("%d", &temp.codCliente);
+                getchar();
+                printf ("insira o nome do cliente:\n");
+                scanf ("%99[^\n]", temp.nome);   
+                getchar(); 
+
+
+                for (int i = 0; i < TAM; i++){
+                    if (clientes[i].codCliente == -1){
+                        clientes[i].codCliente = temp.codCliente;
+                        clientes[i].nome[99] = temp.nome[99];
+                        clientes[i].Flag = 1;
+                        
+                        escreverClientes(clientes, TAM, tabela);
+                        break;
+                    }
+                    if (i == TAM - 1){
+                        printf("Houve um overflow\n");
+                        printf("Remova um cliente caso queira inserir um novo\n\n");
+                    }
+                }
+                printf("\n\n");
+                for (int i = 0; i < TAM; i++){
+                    printf("%d\n", clientes[i].codCliente);
+                }
+                printf("\n\n");
+
+                break;
+
+            case 2:
+                lerClientes (TAM);
+                break;               
+
+            case 3:
+                printf ("escreva o codigo do cliente que quer remover\n");
+                scanf ("%d", &cod);
+
+                removeCliente (cod, clientes);
+                break;            
+
+            case 0:        
+                
+                exit(1);
+        
+            default:
+                printf ("opcao invalida\n");
+                break;
+            }
+
+    
+    } while (true);
 
     return 0;
 }

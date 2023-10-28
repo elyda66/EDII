@@ -4,30 +4,72 @@
 
 
 int main(){
-    Cliente* tabela = (Cliente*)malloc(sizeof(Cliente) * TAM);
+    Cliente* tabelaLinear = (Cliente*)malloc(sizeof(Cliente) * TAM);
+    Cliente* tabelaQuadratica = (Cliente*)malloc(sizeof(Cliente) * TAM);
+    Cliente* tabelaDupla = (Cliente*)malloc(sizeof(Cliente) * TAM);
+
+    tabelaLinear = iniciaTabela (tabelaLinear);
+    tabelaQuadratica = iniciaTabela (tabelaQuadratica);
+    tabelaDupla = iniciaTabela (tabelaDupla);
+
     criaArquivo();
 
-    for(int i = 0; i < TAM; i++){
-        tabela[i].flag = 0;
-    }
-
     char metodo;
-    int continuar = 1;
+    int funcao;
 do
 {
-    printf("Insira um caractere para o metodo de hashing:\nl — Linear\nq — Quadratica\nd — Dispersao Dupla\n");
-    scanf("%c", &metodo);
+    printf ("\n\n");
+    printf ("Qual acao quer fazer?\n");
+    printf ("1: inserir na tabela\n");
+    printf ("2: ler as tabelas\n");
+    printf ("3: remover um termo das tabelas\n");
+    printf ("0: encerrar o programa");
+    printf("\n\n");
+    scanf ("%d", &funcao);
     getchar();
-    tabela = inserirCliente(tabela, metodo);
-    printf("deseja continuar?\n");
-    scanf("%d", &continuar);
-    getchar();
-} while (continuar);
 
+    switch (funcao)
+    {
+    case 1:
+        printf ("\n\n");
+        printf("Insira um caractere para o metodo de hashing:\nl — Linear\nq — Quadratica\nd — Dispersao Dupla\n");
+        scanf("%c", &metodo);
+        getchar();
+        if (metodo == 'l'){
+            tabelaLinear = inserirCliente(tabelaLinear, metodo);
+        }
+        else if (metodo == 'q'){
+            tabelaQuadratica = inserirCliente(tabelaQuadratica, metodo);
+        }
+        else{
+            tabelaDupla = inserirCliente(tabelaDupla, metodo);
+        }
+        break;
+
+        case 2:
+            escreverArquivo (tabelaLinear, tabelaQuadratica, tabelaDupla);
+            lerArquivo();
+            break;
+
+        case 3:
+            printf("ainda não implementado\n");
+            break;
+
+        case 0:
+
+            free(tabelaLinear);
+            free(tabelaQuadratica);
+            free(tabelaDupla);
+
+            exit(1);
+            break;
     
+    default:
 
-
-    free(tabela);
+        printf("opcao invalida\n");
+        break;
+    }
+} while (1);
 
     return 0;
 }

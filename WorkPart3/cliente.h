@@ -55,6 +55,15 @@ int  funcaoFlag(int codCliente, Cliente cliente[], int numCliente, int posicao, 
     }
 }
 
+//zera os valores
+Cliente* iniciaTabela (Cliente tabela[]){
+    for (int i = 0; i < TAM; i++){
+        tabela[i].codCliente = 0;
+        tabela[i].nome[0] = '\0';
+        tabela[i].flag = 0;
+        return tabela; 
+    }  
+}
 
 // Cria o arquivo binário 
 void *criaArquivo(){
@@ -77,7 +86,7 @@ FILE *abreArquivo (){
     return arquivo;
 }
 
-void escreverArquivo (Cliente* tabela){
+void escreverArquivo (Cliente tabelaLinear[], Cliente tabelaQuadratica[], Cliente tabelaDupla[]){
     FILE* arquivoHash = abreArquivo();
     fseek (arquivoHash, 0, SEEK_SET);
 
@@ -90,7 +99,11 @@ void escreverArquivo (Cliente* tabela){
     //tabela->flag = 0;
 
     //fwrite (metodo, sizeof(char), 1, arquivoHash);
-    fwrite (tabela, sizeof(Cliente), 1, arquivoHash);
+
+    fwrite (tabelaLinear, sizeof(Cliente), TAM, arquivoHash);
+    fwrite (tabelaQuadratica, sizeof(Cliente), TAM, arquivoHash);
+    fwrite (tabelaDupla, sizeof(Cliente), TAM, arquivoHash);
+
 
     fclose (arquivoHash);
     free (cliente);
@@ -99,16 +112,39 @@ void escreverArquivo (Cliente* tabela){
 void lerArquivo (){
     FILE* arquivoHash = abreArquivo();
 
+
     fseek (arquivoHash, 0, SEEK_SET);
 
     Cliente *cliente = (Cliente *) malloc(sizeof(Cliente));
 
-    while (fread(cliente, sizeof(Cliente), 1, arquivoHash)){
+    for (int i = 0; i < 3; i++){
 
-        printf("Codigo do cliente: %d\t", cliente->codCliente);
-        printf("Nome do cliente: %s\t", cliente->nome);
-        printf("flag: %d\n", cliente->flag);
+        switch (i)
+        {
+        case 0:
+            printf ("\n\n");
+            printf ("=====================================\n");
+            printf ("Linear\n");
+            break;
+        case 1:
+            printf ("Quadratica\n");
+            break;
+        case 2:
+            printf("Dupla\n");
+            break;
+        }
+
+
+        for (int j = 0; fread(cliente, sizeof(Cliente), 1, arquivoHash) && j < TAM; j++){
+
+            printf("Codigo do cliente: %d\t", cliente->codCliente);
+            printf("Nome do cliente: %s\t", cliente->nome);
+            printf("flag: %d\n", cliente->flag);
+        }
     }
+    
+    printf ("=====================================\n");
+
 }
 
 int hashBase2(int x, int tam){
@@ -192,20 +228,6 @@ Cliente* inserirCliente(Cliente* tabela, char metodoHash){
             printf("Algo está dando errado na alocação.\n");
             exit(1);
     }
-
-
-    for(i = 0; i < tam; i++){
-        if(tabela[conjuntoHash[i]].flag == 0){
-            tabela[conjuntoHash[i]] = novoCliente;
-            //printf("Cliente #%d — %s inserido com sucesso!\n", tabela[conjuntoHash[i]].codCliente, tabela[conjuntoHash[i]].nome);
-            
-            escreverArquivo(&tabela[conjuntoHash[i]]);
-
-            lerArquivo();
-            break;
-        }
-    }
-
     if(i == tam)
         printf("Erro! Nao ha espaco na tabela. Desculpe-nos pelo inconveniente.\n");
 

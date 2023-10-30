@@ -23,7 +23,7 @@ typedef struct no{
 void inicializarTabela(Lista t[]) {
     for (int i = 0; i < TAM; i++) {
         t[i].chave = 0; //  chaves com um valor inválido
-        t[i].proximo = NULL;  
+        t[i].proximo = NULL;
     }
 }
 
@@ -32,12 +32,12 @@ int funcaoHash(int chave){
 }
 
 int  funcaoFlag(int codCliente, Cliente cliente[], int numCliente, int posicao, Lista t[]){
-    
+
     int hash = funcaoHash(codCliente);
     if(codCliente == -1){
        return 0;
     }
-       
+
     for (int i = posicao; i < numCliente; i++){
         if (t[hash].chave == 0){
             t[hash].chave = 1;
@@ -51,7 +51,7 @@ int  funcaoFlag(int codCliente, Cliente cliente[], int numCliente, int posicao, 
                      return 1;
                 }
             }
-        }    
+        }
     }
 }
 
@@ -61,11 +61,11 @@ Cliente* iniciaTabela (Cliente tabela[]){
         tabela[i].codCliente = 0;
         tabela[i].nome[0] = '\0';
         tabela[i].flag = 0;
-        return tabela; 
-    }  
+    }
+    return tabela;
 }
 
-// Cria o arquivo binário 
+// Cria o arquivo binário
 void *criaArquivo(){
     FILE *arquivo = fopen("tabHash.dat", "w+b");
     if(arquivo == NULL){
@@ -90,10 +90,11 @@ void escreverArquivo (Cliente tabelaLinear[], Cliente tabelaQuadratica[], Client
     FILE* arquivoHash = abreArquivo();
     fseek (arquivoHash, 0, SEEK_SET);
 
-    Cliente *cliente = (Cliente *) malloc(sizeof(Cliente));
+    //Cliente *cliente = (Cliente *) malloc(sizeof(Cliente));
 
     //avançando o ponteiro do arquivo até chegar ao seu fim
-    while (fread(cliente, sizeof(Cliente), 1, arquivoHash));
+    //Não vejo motivo nisso. ~Walter
+    //while (fread(cliente, sizeof(Cliente), 1, arquivoHash)) continue;
 
     //sem isto o codigo escreve lixo do sistema na flag
     //tabela->flag = 0;
@@ -106,7 +107,7 @@ void escreverArquivo (Cliente tabelaLinear[], Cliente tabelaQuadratica[], Client
 
 
     fclose (arquivoHash);
-    free (cliente);
+    //free (cliente);
 }
 
 void lerArquivo (){
@@ -115,7 +116,7 @@ void lerArquivo (){
 
     fseek (arquivoHash, 0, SEEK_SET);
 
-    Cliente *cliente = (Cliente *) malloc(sizeof(Cliente));
+    Cliente *cliente = (Cliente*) malloc(sizeof(Cliente));
 
     for (int i = 0; i < 3; i++){
 
@@ -142,7 +143,7 @@ void lerArquivo (){
             printf("flag: %d\n", cliente->flag);
         }
     }
-    
+
     printf ("=====================================\n");
 
 }
@@ -155,11 +156,13 @@ int hashBase2(int x, int tam){
     int nBits = ceil(log(tam)/log(2));
     int cutOff = wordBits - nBits;
 
-    for(int i = 0; i < cutOff; i++){
-        if(!(i%2))
-            x = floor(x/2);
-        else
-            x = x % (int) pow(2, wordBits - (i + 1));
+    if(cutOff > 0){
+        for(int i = 0; i < cutOff; i++){
+            if(!(i%2))
+                x = floor(x/2);
+            else
+                x = x % (int) pow(2, wordBits - (i + 1));
+        }
     }
 
     return hashBase(x, tam);
@@ -168,9 +171,12 @@ int hashBase2(int x, int tam){
 
 int* hashLinear(int x, int tam){
     int* conjuntoHash = (int*)malloc(sizeof(int) * tam);
-    //O problema está em algum lugar nesta função. Mais provavelmente no loop.
+
+    printf("Chaves da Hash Linear\n");
+
     for(int k = 0; k < tam; k++){
         conjuntoHash[k] = (hashBase(x, tam) + k) % tam;
+        printf("%d\n", conjuntoHash[k]);
     }
 
     return conjuntoHash;
@@ -179,56 +185,64 @@ int* hashLinear(int x, int tam){
 int* hashQuadratica(int x, int tam, int c1, int c2){
     int* conjuntoHash = (int*)malloc(sizeof(int) * tam);
 
+    printf("Chaves da Hash Quadratica\n");
+
     if(c2 == 0)
         return hashLinear(x, tam);
 
-    for(int k = 0; k < tam; k++)
-        conjuntoHash[k] = (int) (hashBase(x, tam) + c1 * k + c2 * pow(k, 2))%tam;
+    for(int k = 0; k < tam; k++){
+        conjuntoHash[k] = (int) (hashBase(x, tam) + c1 * k + c2 * (int)pow(k, 2))%tam;
+        printf("%d\n", conjuntoHash[k]);
+    }
 
     return conjuntoHash;
 }
 
 int* hashDispersaoDupla(int x, int tam){
     int* conjuntoHash = (int*)malloc(sizeof(int) * tam);
-    for(int k = 0; k < tam; k++)
-        conjuntoHash[k] = hashBase(x, tam) + k * hashBase2(x, tam);
+
+    printf("Chaves da Hash de Dispersao Dupla\n");
+
+    for(int k = 0; k < tam; k++){
+        conjuntoHash[k] = (hashBase(x, tam) + k * hashBase2(x, tam)) % tam;
+        printf("%d\n", conjuntoHash[k]);
+    }
 
     return conjuntoHash;
 }
 
 
-Cliente* inserirCliente(Cliente* tabela, char metodoHash){
-    //Eu sei que as inserções são aleatórias, mas desenvolver uma inserção manual faz sentido por enquanto ~ Walter
-    Cliente novoCliente;
+Cliente* inserirCliente(Cliente* tabela, char metodoHash, Cliente cli){
+    //Removi a inserção manual de dentro da função. ~Walter
     int* conjuntoHash;
-    int tam = 7;
     int i;
 
-    printf("Inserir chave do cliente:\t");
-    scanf("%d", &novoCliente.codCliente);
-    getchar();
-    printf("Inserir nome do cliente:\t");
-    scanf("%s", &novoCliente.nome);
-    getchar();
-    
     switch(metodoHash){
         case 'l':
-            conjuntoHash = hashLinear(novoCliente.codCliente,tam);
+            conjuntoHash = hashLinear(cli.codCliente,TAM);
             break;
 
         case 'q':
-            conjuntoHash = hashQuadratica(novoCliente.codCliente, tam, 0, 1);
+            conjuntoHash = hashQuadratica(cli.codCliente, TAM, 0, 1);
             break;
 
         case 'd':
-            conjuntoHash = hashDispersaoDupla(novoCliente.codCliente, tam);
+            conjuntoHash = hashDispersaoDupla(cli.codCliente, TAM);
             break;
 
         default:
-            printf("Algo está dando errado na alocação.\n");
+            printf("Algo esta dando errado na alocacao.\n");
             exit(1);
     }
-    if(i == tam)
+
+    for(i = 0; i < TAM; i++){
+        if(tabela[conjuntoHash[i]].flag == 0){
+            tabela[conjuntoHash[i]] = cli;
+            break;
+        }
+    }
+
+    if(i == TAM)
         printf("Erro! Nao ha espaco na tabela. Desculpe-nos pelo inconveniente.\n");
 
     free(conjuntoHash);

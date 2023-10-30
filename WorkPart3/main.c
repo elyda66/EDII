@@ -16,6 +16,8 @@ int main(){
 
     char metodo;
     int funcao;
+    Cliente cli;
+
 do
 {
     printf ("\n\n");
@@ -31,19 +33,19 @@ do
     switch (funcao)
     {
     case 1:
-        printf ("\n\n");
-        printf("Insira um caractere para o metodo de hashing:\nl — Linear\nq — Quadratica\nd — Dispersao Dupla\n");
-        scanf("%c", &metodo);
+
+        printf("Inserir chave do cliente:\t");
+        scanf("%d", &cli.codCliente);
         getchar();
-        if (metodo == 'l'){
-            tabelaLinear = inserirCliente(tabelaLinear, metodo);
-        }
-        else if (metodo == 'q'){
-            tabelaQuadratica = inserirCliente(tabelaQuadratica, metodo);
-        }
-        else{
-            tabelaDupla = inserirCliente(tabelaDupla, metodo);
-        }
+        printf("Inserir nome do cliente:\t");
+        scanf("%s", &cli.nome);
+        getchar();
+        cli.flag = 1;
+
+        //Nota: Agora, cada tabela vai receber uma única entrada. ~Walter
+        tabelaLinear = inserirCliente(tabelaLinear, 'l', cli);
+        tabelaQuadratica = inserirCliente(tabelaQuadratica, 'q', cli);
+        tabelaDupla = inserirCliente(tabelaDupla, 'd', cli);
         break;
 
         case 2:
@@ -63,7 +65,7 @@ do
 
             exit(1);
             break;
-    
+
     default:
 
         printf("opcao invalida\n");

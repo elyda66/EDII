@@ -91,7 +91,6 @@ void escreverArquivo (Cliente tabelaLinear[], Cliente tabelaQuadratica[], Client
     fseek (arquivoHash, 0, SEEK_SET);
 
     //Cliente *cliente = (Cliente *) malloc(sizeof(Cliente));
-
     //avançando o ponteiro do arquivo até chegar ao seu fim
     //Não vejo motivo nisso. ~Walter
     //while (fread(cliente, sizeof(Cliente), 1, arquivoHash)) continue;
@@ -124,7 +123,7 @@ void lerArquivo (){
         {
         case 0:
             printf ("\n\n");
-            printf ("=====================================\n");
+            printf ("==========================================================================\n");
             printf ("Linear\n");
             break;
         case 1:
@@ -136,16 +135,16 @@ void lerArquivo (){
         }
 
 
-        for (int j = 0; fread(cliente, sizeof(Cliente), 1, arquivoHash) && j < TAM; j++){
-
+        for (int j = 0; j < TAM; j++){
+            fread(cliente, sizeof(Cliente), 1, arquivoHash);
             printf("Codigo do cliente: %d\t", cliente->codCliente);
             printf("Nome do cliente: %s\t", cliente->nome);
             printf("flag: %d\n", cliente->flag);
         }
+
+        printf ("==========================================================================\n\n");
+
     }
-
-    printf ("=====================================\n");
-
 }
 
 int hashBase2(int x, int tam){

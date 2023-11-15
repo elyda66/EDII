@@ -32,7 +32,7 @@ do
     {
     case 1:
         printf ("\n\n");
-        printf("Insira um caractere para o metodo de hashing:\nl — Linear\nq — Quadratica\nd — Dispersao Dupla\n");
+        printf("Insira um caractere para o metodo de hashing:\nl  Linear\nq  Quadratica\nd  Dispersao Dupla\n");
         scanf("%c", &metodo);
         getchar();
         if (metodo == 'l'){
